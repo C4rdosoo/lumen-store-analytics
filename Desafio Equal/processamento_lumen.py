@@ -6,10 +6,10 @@ import os
 #lendo os arquivos 
 
 try: 
-    df_vendas = pd.read_csv('fato_vendas.xlsx - Sheet1.csv')
-    df_produtos = pd.read_csv('dim_produtos.xlsx - Sheet1.csv')
-    df_familia = pd.read_csv('dim_familia_produtos.xlsx - Sheet1.csv')
-    df_vendedor = pd.read_csv('dim_vendedor.xlsx - Sheet1.csv')
+    df_vendas = pd.read_excel('fato_vendas.xlsx')
+    df_produtos = pd.read_excel('dim_produtos.xlsx ')
+    df_familia = pd.read_excel('dim_familia_produtos.xlsx ')
+    df_vendedor = pd.read_excel('dim_vendedor.xlsx ')
     print("inportado com sucesso")
 except FloatingPointError:
     print("Erro: Nenhum arquivo encontrado, Verifique se estão na pasta")
