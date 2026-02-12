@@ -5,16 +5,16 @@ import os
 
 #lendo os arquivos 
 
-try: 
+try:
+    print("importando planilhas")
     df_vendas = pd.read_excel('fato_vendas.xlsx')
-    df_produtos = pd.read_excel('dim_produtos.xlsx ')
-    df_familia = pd.read_excel('dim_familia_produtos.xlsx ')
-    df_vendedor = pd.read_excel('dim_vendedor.xlsx ')
+    df_produtos = pd.read_excel('dim_produtos.xlsx')
+    df_familia = pd.read_excel('dim_familia_produtos.xlsx')
+    df_vendedor = pd.read_excel('dim_vendedor.xlsx')
     print("importado com sucesso")
-except FloatingPointError:
-    print("Erro: Nenhum arquivo encontrado, Verifique se estão na pasta")
-
-exit () 
+except FileNotFoundError:
+    print("Erro: Nenhum arquivo encontrado, Verifique se estão na pasta ❌")
+    exit () 
 
 # Fazendo que os numeros sejam lidos como string 
 
@@ -47,3 +47,19 @@ df_completo['Custo Total'] = df_completo['quantidade']*df_completo['custo_produt
 
 df_completo['Lucro'] = df_completo['valor_monetario_total'] - df_completo ['Custo Total']
 
+
+#Produtos comprados juntos 
+
+cesta = df_completo[['codigo_cliente','descricaofamilia']].dropna().drop_duplicates()
+
+afinidade = cesta.merge(cesta, on= 'codigo_cliente')
+
+afinidade = afinidade[afinidade['descricaofamilia_x']!= afinidade['descricaofamilia_y']]
+
+ranking = afinidade.groupby(['descricaofamilia_x', 'descricaofamilia_y']).size().reset_index(name = 'qdt_juntos')
+ranking = ranking.sort_values('qdt_juntos' , ascending=False )
+
+
+print ('salvando no excel ')
+df_completo.to_excel("Lumen_Dados_Completos.xlsx", index=False)
+ranking.to_excel("Lumen_Afinidade.xlsx", index = False )
