@@ -36,7 +36,9 @@ df_completo = df_completo.merge(df_vendedor,on='codigo_vendedor', how='left')
 
 
 df_completo['data_venda'] = pd.to_datetime(df_completo['data_venda'])
+df_completo = df_completo.sort_values(df_completo['data_venda'])
 df_completo['Mes_Ano'] = df_completo['data_venda'].dt.strftime('%Y-%m')
+
 
 
 
@@ -60,5 +62,10 @@ df_completo['Receita Bruta'] = df_completo['Receita Liquida'] + df_completo ['De
 df_completo['Lucro'] = df_completo['Receita Liquida'] - df_completo ['Custo Total']
 
 
-df_completo.to_excel("Lumen_Analitico_Final.xlsx", index=False)
+pasta_atual = os.path.dirname(os.path.abspath(__file__))
+
+caminho_arquivo = os.path.join(pasta_atual , "Lumen_Analitico_Final.xlsx")
+
+
+df_completo.to_excel(caminho_arquivo, index=False)
 print(" Base pronta: 'Lumen_Analitico_Final.xlsx'")

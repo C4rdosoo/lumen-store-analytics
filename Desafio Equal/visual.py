@@ -36,11 +36,11 @@ aba1 ,aba2 , aba3 , aba4 = st.tabs(["Finaças" , "Vendedores" , "Produtos" , "Cl
 
 with aba1: 
     st.header( "Finanças ")
-    col1,col2,col3 = st.columns(3)
+    col1,col2,col3  = st.columns(3)
     
-    col1.metric("Faturamento Liquido", f"R${df_filtrado['Receita Liquida'].sum():,.2f}")
+    col1.metric("Faturamento Bruto", f"R${df_filtrado['Receita Liquida'].sum():,.2f}")
     col2.metric("Total Desconto", f"R${df_filtrado['Desconto'].sum():,.2f}")
-    
+    col3.metric("Faturamento Liquido", f"R${df_filtrado['Receita Bruta'].sum():,.2f}")
     
     temp = df_filtrado.groupby('Mes_Ano')[['Receita Bruta', 'Receita Liquida']].sum().reset_index()
     
@@ -48,7 +48,8 @@ with aba1:
     st.plotly_chart(px.bar(temp,
                            x='Mes_Ano',
                            y=['Receita Bruta', 'Receita Liquida'], 
-                           title= "Total de descontos em "), 
+                           title= "Total de descontos em ", 
+                           barmode='group'),
                     use_container_width=True)
     
     
