@@ -3,7 +3,17 @@ import pandas as pd
 import plotly.express as px 
 
 st.set_page_config(page_title="Lumen Dashboard" , layout="wide")
-st.title("Lumen Store - Painel de Gerencia ")
+
+col_logo, col_titulo = st.columns([2, 20]) 
+
+with col_logo:
+    
+    st.image("Lumen.png", width=200) 
+
+with col_titulo:
+    st.title("Lumen Store - Painel de Gerencia")
+
+
 
 #para otmização do sistema
 @st.cache_data
@@ -38,9 +48,9 @@ with aba1:
     st.header( "Finanças ")
     col1,col2,col3  = st.columns(3)
     
-    col1.metric("Faturamento Liquido", f"R${df_filtrado['Receita Liquida'].sum():,.2f}")
+    col1.metric("Receita Bruta", f"R${df_filtrado['Receita Liquida'].sum():,.2f}")
     col2.metric("Total Desconto", f"R${df_filtrado['Desconto'].sum():,.2f}")
-    col3.metric("Receita Bruta", f"R${df_filtrado['Receita Bruta'].sum():,.2f}")
+    col3.metric("Faturamento Liquido", f"R${df_filtrado['Receita Bruta'].sum():,.2f}")
     
     temp = df_filtrado.groupby('Mes_Ano')[['Receita Liquida', 'Receita Bruta']].sum().reset_index()
     
@@ -50,7 +60,9 @@ with aba1:
                            y=['Receita Liquida', 'Receita Bruta'], 
                            title= "Total de descontos em ", 
                            barmode='group')
+ 
     fig.update_yaxes(range=[1000000 , 3200000])
+    fig.update_layout(hovermode="x unified")
     st.plotly_chart(fig,use_container_width=True)
     
     
