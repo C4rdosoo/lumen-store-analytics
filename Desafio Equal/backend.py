@@ -43,7 +43,7 @@ df_completo['Mes_Ano'] = df_completo['data_venda'].dt.strftime('%Y-%m')
 
 
 df_completo['Custo Total'] = df_completo['quantidade']*df_completo['custo_produto_unitario']
-df_completo['Receita Liquida'] = df_completo["valor_monetario_total"]
+df_completo['Receita Bruta'] = df_completo["valor_monetario_total"]
 
 
 #grantia de desconto (caso não tenha na coluna cria zerada 
@@ -55,11 +55,11 @@ else:
 
 
 #resposta 1 
-df_completo['Receita Bruta'] = df_completo['Receita Liquida'] + df_completo ['Desconto']
+df_completo['Receita Liquida'] = df_completo['Receita Bruta'] + df_completo ['Desconto']
 
 
 #resp 5 
-df_completo['Lucro'] = df_completo['Receita Liquida'] - df_completo ['Custo Total']
+df_completo['Lucro'] = df_completo['Receita Bruta'] - df_completo ['Custo Total']
 
 
 pasta_atual = os.path.dirname(os.path.abspath(__file__))

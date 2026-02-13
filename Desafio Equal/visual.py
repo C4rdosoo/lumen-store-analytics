@@ -38,19 +38,20 @@ with aba1:
     st.header( "Finanças ")
     col1,col2,col3  = st.columns(3)
     
-    col1.metric("Faturamento Bruto", f"R${df_filtrado['Receita Liquida'].sum():,.2f}")
+    col1.metric("Faturamento Liquido", f"R${df_filtrado['Receita Liquida'].sum():,.2f}")
     col2.metric("Total Desconto", f"R${df_filtrado['Desconto'].sum():,.2f}")
-    col3.metric("Faturamento Liquido", f"R${df_filtrado['Receita Bruta'].sum():,.2f}")
+    col3.metric("Receita Bruta", f"R${df_filtrado['Receita Bruta'].sum():,.2f}")
     
-    temp = df_filtrado.groupby('Mes_Ano')[['Receita Bruta', 'Receita Liquida']].sum().reset_index()
+    temp = df_filtrado.groupby('Mes_Ano')[['Receita Liquida', 'Receita Bruta']].sum().reset_index()
     
     
-    st.plotly_chart(px.bar(temp,
+    fig = px.bar(temp,
                            x='Mes_Ano',
-                           y=['Receita Bruta', 'Receita Liquida'], 
+                           y=['Receita Liquida', 'Receita Bruta'], 
                            title= "Total de descontos em ", 
-                           barmode='group'),
-                    use_container_width=True)
+                           barmode='group')
+    fig.update_yaxes(range=[1000000 , 3200000])
+    st.plotly_chart(fig,use_container_width=True)
     
     
     
