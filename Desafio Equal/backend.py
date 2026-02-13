@@ -35,8 +35,8 @@ df_completo = df_completo.merge(df_vendedor,on='codigo_vendedor', how='left')
 
 
 
-df_completo['data_vendas'] = pd.to_datetime(df_completo['data_vendas'])
-df_completo['Mes_Ano'] = df_completo['data_vendas'].dt.strftime('%Y-%m')
+df_completo['data_venda'] = pd.to_datetime(df_completo['data_venda'])
+df_completo['Mes_Ano'] = df_completo['data_venda'].dt.strftime('%Y-%m')
 
 
 
@@ -61,3 +61,4 @@ df_completo['Lucro'] = df_completo['Receita Liquida'] - df_completo ['Custo Tota
 
 
 df_completo.to_excel("Lumen_Analitico_Final.xlsx", index=False)
+print(" Base pronta: 'Lumen_Analitico_Final.xlsx'")
