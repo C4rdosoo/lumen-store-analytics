@@ -65,10 +65,18 @@ with aba1:
     fig.update_layout(hovermode="x unified")
     st.plotly_chart(fig,use_container_width=True)
     
-    
-    
+with aba2:
+
+ if 'filial_venda' in df_filtrado.columns:
+    st.subheader("Performance de filiais")
+    evolucao = df_filtrado.groupby(['Mes_Ano','filial_venda'])['Receita Liquida'].sum().reset_index()
+    fig_ev = px.line(evolucao , x= 'Mes_Ano' , y= 'Receita Liquida' ,  color= 'filial_venda', markers= True)
+    st.plotly_chart(fig_ev ,use_container_width= True)
+
+ else:
+    st.warning = ('Coluna não encontrada ')
 
 
 
-
+ 
 
