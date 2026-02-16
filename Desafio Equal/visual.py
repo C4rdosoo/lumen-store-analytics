@@ -74,7 +74,7 @@ with aba2:
     st.plotly_chart(fig_ev ,use_container_width= True)
 
  else:
-    st.warning = ('Coluna não encontrada ')
+    st.warning ('Coluna não encontrada ')
 
 with aba3:
     st.header ("Analise de Produtos")
@@ -193,5 +193,79 @@ with aba3:
         st.error("As colunas necessárias para o cálculo de lucro não foram encontradas no Excel.")
                          
                 
+with aba4:
+    st.header ( "Analise de Cliente ")
+    st.divider()
+    
+    
+    st.subheader(" Oportunidades de Venda Cruzada")
+    st.markdown("Descubra padrões de compra: **Selecione uma família** abaixo para ver o que os clientes costumam comprar junto com ela.")
+    
+    
+    #verificação de quem comprou o que ( sem duplicatas )
+    df_cross = df_filtrado[['codigo_cliente','descricaofamilia']].drop_duplicates()
+    
+    #seletor de familias 
+    todas_familias = sorted(df_cross['descricaofamilia'].unique())
+    
+    if todas_familias:
+        familia_selecionada = st.selectbox("Quero saber o que vendemos para quem compra:", options= todas_familias)
         
-        
+        if familia_selecionada:
+            
+            # Achar todos os clientes que compraram a família selecionada
+            
+            clientes_alvos = df_cross[df_cross['descricaofamilia']== familia_selecionada]['codigo_cliente'].unique()
+            qtd_cliente_alvo = len ( clientes_alvos)
+            
+            #filtrar todas as compras desse cliente 
+            compras_dos_alvos = df_cross[df_cross['codigo_cliente'].isin(clientes_alvos)]
+            
+            # remover a propria familia selecionada 
+            compras_associadas = compras_dos_alvos[compras_dos_alvos[ 'descricaofamilia'] != familia_selecionada]
+
+            #Contar frequencia das outras familias 
+            
+            ranking_afinidade = compras_associadas ['descricaofamilia'].value_counts().reset_index()
+            ranking_afinidade.columns = ['Familia_Associada', 'Qtd_Clientes_Compartilhados']           
+
+            
+            #Calculos de probablidade 
+            #"Dos 100 clientes que compraram X, 30% também compraram Y"
+            ranking_afinidade['Probabilidade (%)'] = (ranking_afinidade['Qtd_Clientes_Compartilhados'] / qtd_cliente_alvo) *100 
+            
+            #pegando o top 10 
+            
+            top_associados = ranking_afinidade.head(10)
+
+            
+            #exibição de KPIs 
+            
+            col_kpi1 , col_kpi2 = st.columns(2)
+            col_kpi1.metric(f"Total de Cliente ({familia_selecionada})" , f"{qtd_cliente_alvo}")
+            
+            
+            if not top_associados.empty: 
+                melhor_par = top_associados.iloc[0]['Familia_Associada']
+                perc_melhor = top_associados.iloc[0]['Probabilidade (%)']
+                col_kpi2.metric("Maior Afinidade com:" , f"{melhor_par}", f"{perc_melhor:.1f}% dos clientes também compram")
+                
+            #Criação do Grafico     
+            fig_afinidade = px.bar(top_associados,
+                                   x='Probabilidade (%)',
+                                   y='Familia_Associada',
+                                   orientation='h',
+                                   text_auto='.1f',
+                                   title=f"Quem compra '{familia_selecionada}' tem maior chance de levar...",
+                                   labels={'Familia_Associada': 'Sugestão de Bundle', 'Probabilidade (%)': '% de Clientes que também compraram'},
+                                   color='Probabilidade (%)',
+                                   color_continuous_scale='Oranges')
+            
+            fig_afinidade.update_layout(yaxis=dict(autorange="reversed"), xaxis_title='% de Afinidade')
+            st.plotly_chart(fig_afinidade, use_container_width= True)
+            
+        else:
+            st.warning("Essa familia não teve vendas suficientes nesse periodo para ter um padrão  ")
+            
+    else:        
+      st.warning("Sem dados para analisar.")      
