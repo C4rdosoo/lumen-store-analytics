@@ -82,6 +82,8 @@ with aba3:
     coluna_familia = 'descricaofamilia'
     
     st.divider()
+    
+    #Part 1 : familia 
 
     if coluna_familia in df_filtrado.columns:
     
@@ -127,11 +129,69 @@ with aba3:
     st.divider()    
     
     
-    st.subhearder ( "Detalhe: Top 5 Produtos por Familia")
+    #Produtos 
     
-   ########  cols_necessarias = [ Ver na tabela  ]
+    st.subheader ( "Detalhe: Top 5 Produtos por Familia")
     
-    coluna_produto = 'descricaoproduto'
+    cols_necessarias = [ 'quantidade',
+                        'preco_venda_unitario', 
+                        'custo_produto_unitario', 
+                        'descricaoproduto',
+                        'descricaofamilia'] 
     
+    if all( col in df_filtrado.columns for col in cols_necessarias): 
+        
+        
+        df_filtrado['Lucro_Calculado'] = df_filtrado['quantidade'] * (df_filtrado ['preco_venda_unitario'] - df_filtrado['custo_produto_unitario'] )
+        
+        # escolhendo a familia 
+        lista_familia = sorted(df_filtrado['descricaofamilia'].unique())
+        familia_selecionada = st.selectbox("Selecione a Familia para Detalhar:" , options= lista_familia)
+        
+        
+        #filtagem de dados 
+        df_produto_familia = df_filtrado[df_filtrado['descricaofamilia']== familia_selecionada]
+        
+        
+        #agrupamento de produtos  + soma da receita 
+        df_top_produtos = df_produto_familia.groupby('descricaoproduto')[['Receita Liquida', 'Lucro_Calculado']].sum().reset_index()
+        
+        df_top_produtos = df_top_produtos.sort_values('Receita Liquida', ascending = False).head(5)
+
+        if not df_top_produtos.empty:
+            prod_lider = df_top_produtos.iloc[0]['descricaoproduto']
+            receita_lider = df_top_produtos.iloc[0]['Receita Liquida']
+            total_da_familia = df_produto_familia['Receita Liquida'].sum()
+            
+            
+            perc_dependencia = (receita_lider / total_da_familia) * 100 
+            
+            # regra de alerta para  > 40 % , é uma dependecia alta 
+            tipo_alerta = "warning" if perc_dependencia > 40 else "info"
+            
+            if tipo_alerta == 'warning':
+                st.warning(f" O produto **{prod_lider}** concentra **{perc_dependencia:.1f}%** "
+                               f"de toda a receita da família {familia_selecionada}.")
+            else:
+                st.info(f"O produto **{prod_lider}** é o líder, representando **{perc_dependencia:.1f}%** "
+                            f"das vendas desta família.")
+                
+        fig_prod = px.bar(df_top_produtos,
+                          x='Receita Liquida', 
+                              y='descricaoproduto',
+                              orientation='h',
+                              text_auto=True,
+                              title=f"Top 5 Produtos - {familia_selecionada}",
+                              color='Lucro_Calculado', 
+                              color_continuous_scale='Greens', 
+                              labels={'descricaoproduto': 'Produto', 'Lucro_Calculado': 'Lucro Total', 'Receita Liquida': 'Vendas'})
+        
+        fig_prod.update_layout(yaxis=dict(autorange="reversed")) # Maior no topo
+        st.plotly_chart(fig_prod, use_container_width=True)
+            
+    else:
+        st.error("As colunas necessárias para o cálculo de lucro não foram encontradas no Excel.")
+                         
+                
         
         
