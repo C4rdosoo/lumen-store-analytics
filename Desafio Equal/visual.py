@@ -76,7 +76,62 @@ with aba2:
  else:
     st.warning = ('Coluna não encontrada ')
 
+with aba3:
+    st.header ("Analise de Produtos")
+    
+    coluna_familia = 'descricaofamilia'
+    
+    st.divider()
 
-
+    if coluna_familia in df_filtrado.columns:
+    
+        df_familia = df_filtrado.groupby(coluna_familia)[['Receita Liquida']].sum().reset_index()
+    
+        df_familia = df_familia.sort_values('Receita Liquida', ascending= False)
+    
+        total_receitas = df_familia['Receita Liquida'].sum()
+        df_familia['Participacao (%)'] = (df_familia['Receita Liquida'] / total_receitas) * 100
+    
+        top_5_famila = df_familia.head(5)
+    
+        if not df_familia.empty:
+            top_1_nome = df_familia.iloc[0][coluna_familia]
+            top_1_perc = df_familia.iloc[0]['Participacao (%)']
+            
+            st.info(f'A familia **{top_1_nome}** é o lider de vendas, '
+                f'representando **{top_1_perc:.1f}%** do faturamento selecionado ')
  
+        else :
+            st.warning("Não há dados para os filtos selecionados")
+            
+        st.divider()
+        
+        fig_top5 = px.bar(top_5_famila,
+                  x='Receita Liquida',
+                  y= coluna_familia,
+                  orientation = 'h',
+                  text_auto= True , 
+                  title = "Top 5 familias mais Relevantes" ,
+                  color = 'Receita Liquida' ,
+                  color_continuous_scale = 'Blues' )
 
+        fig_top5.update_layout(yaxis=dict(autorange="reversed"))
+
+        st.plotly_chart(fig_top5, use_container_width = True)
+
+    else: 
+        st.error(f"Error A coluna '{coluna_familia}' não existe do DataFrame.   ")
+        
+        
+        
+    st.divider()    
+    
+    
+    st.subhearder ( "Detalhe: Top 5 Produtos por Familia")
+    
+   ########  cols_necessarias = [ Ver na tabela  ]
+    
+    coluna_produto = 'descricaoproduto'
+    
+        
+        
