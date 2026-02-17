@@ -76,6 +76,34 @@ with aba2:
  else:
     st.warning ('Coluna não encontrada ')
 
+ st.divider() 
+
+
+st.subheader(" Clientes Distintos ")
+
+
+if 'filial_venda' in df_filtrado.columns and 'codigo_cliente' in df_filtrado.columns:
+        
+    
+    df_clientes = df_filtrado.groupby(['filial_venda', 'Mes_Ano'])['codigo_cliente'].nunique().reset_index()
+    
+    
+    tabela_clientes = df_clientes.pivot(index='filial_venda', columns='Mes_Ano', values='codigo_cliente')
+    
+    
+    tabela_clientes = tabela_clientes.fillna(0).astype(int)
+    
+   
+    tabela_clientes.index.name = "Loja / Mês (Qtd. Clientes)"
+    
+    
+    st.dataframe(tabela_clientes, use_container_width=True)
+        
+else:
+    st.warning("Colunas 'filial_venda' ou 'codigo_cliente' não encontradas.")
+
+
+
 with aba3:
     st.header ("Analise de Produtos")
     
