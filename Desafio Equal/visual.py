@@ -11,7 +11,7 @@ with col_logo:
     st.image("Lumen.png", width=200) 
 
 with col_titulo:
-    st.title("Lumen Store - Painel de Gerencia")
+    st.title("Lumen Store - Painel de Inteligência Comercial")
 
 
 
@@ -29,7 +29,7 @@ if df is None:
     st.error ( "O arquivo 'Lumen_Analitico_Final.xlsx' ainda não foi gerado ")
     st.stop()
     
-#Filtros 
+#Filtros laterias dos meses
 
 st.sidebar.header('Filtros')
 meses = st.sidebar.multiselect("mês",
@@ -41,20 +41,20 @@ df_filtrado = df[df['Mes_Ano'].isin(meses)]
 
 #Criando Tabelas 
 
-aba1 ,aba2 , aba3 , aba4 = st.tabs(["Finaças" , "Vendedores" , "Produtos" , "Cliente" ])
+aba1 ,aba2 , aba3 , aba4 = st.tabs(["Financeiro" , "Performance de Vendas " , "Produtos" , "Cliente" ])
 
 
 with aba1: 
-    st.header( "Finanças ")
+    st.header( "Visão Financeira")
     col1,col2,col3  = st.columns(3)
     
-    col1.metric("Receita Bruta", f"R${df_filtrado['Receita Bruta'].sum():,.2f}")
-    col2.metric("Total Desconto", f"R${df_filtrado['Desconto'].sum():,.2f}")
-    col3.metric("Faturamento Liquido", f"R${df_filtrado['Receita Liquida'].sum():,.2f}")
+    col1.metric("Receita Bruta Total ", f"R${df_filtrado['Receita Bruta'].sum():,.2f}")
+    col2.metric("Total de Descontos", f"R${df_filtrado['Desconto'].sum():,.2f}")
+    col3.metric("Faturamento Líquido", f"R${df_filtrado['Receita Liquida'].sum():,.2f}")
     
     temp = df_filtrado.groupby('Mes_Ano')[['Receita Bruta' , 'Receita Liquida']].sum().reset_index()
     
-    
+    #grafico do faturamento 
     fig = px.bar(temp,
                            x='Mes_Ano',
                            y=[ 'Receita Bruta','Receita Liquida'], 
@@ -66,9 +66,11 @@ with aba1:
     st.plotly_chart(fig,use_container_width=True)
     
 with aba2:
+    
+# Análise de vendas por filial
 
  if 'filial_venda' in df_filtrado.columns:
-    st.subheader("Performance de filiais")
+    st.subheader("Performance Mensal por Unidade ")
     evolucao = df_filtrado.groupby(['Mes_Ano','filial_venda'])['Receita Liquida'].sum().reset_index()
     fig_ev = px.line(evolucao , x= 'Mes_Ano' , y= 'Receita Liquida' ,  color= 'filial_venda', markers= True)
     st.plotly_chart(fig_ev ,use_container_width= True)
@@ -79,7 +81,7 @@ with aba2:
  st.divider() 
 
 
- st.subheader(" Clientes Distintos ")
+ st.subheader("Fluxo de Clientes Únicos por Loja")
 
 
  if 'filial_venda' in df_filtrado.columns and 'codigo_cliente' in df_filtrado.columns:
@@ -104,7 +106,8 @@ with aba2:
     
     
  st.divider()
- st.subheader(" Descontos")
+ 
+ st.subheader("Análise de Desconto")
 
 # Somatoria do total de cada vendedor
  df_rank = df_filtrado.groupby('nome_vendedor')[['Receita Bruta', 'Desconto']].sum().reset_index()
@@ -148,7 +151,7 @@ with aba2:
 
 
 with aba3:
-    st.header ("Analise de Produtos")
+    st.header ("Análise de Produtos")
     
     coluna_familia = 'descricaofamilia'
     
@@ -265,11 +268,11 @@ with aba3:
                          
                 
 with aba4:
-    st.header ( "Analise de Cliente ")
+    st.header ( "Inteligência de Cliente e Cross-Sell")
     st.divider()
     
     
-    st.subheader(" Oportunidades de Venda Cruzada")
+    st.subheader("Matriz de Afinidade")
     st.markdown("Descubra padrões de compra: **Selecione uma família** abaixo para ver o que os clientes costumam comprar junto com ela.")
     
     
