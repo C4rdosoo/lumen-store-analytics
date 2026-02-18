@@ -79,10 +79,10 @@ with aba2:
  st.divider() 
 
 
-st.subheader(" Clientes Distintos ")
+ st.subheader(" Clientes Distintos ")
 
 
-if 'filial_venda' in df_filtrado.columns and 'codigo_cliente' in df_filtrado.columns:
+ if 'filial_venda' in df_filtrado.columns and 'codigo_cliente' in df_filtrado.columns:
         
     
     df_clientes = df_filtrado.groupby(['filial_venda', 'Mes_Ano'])['codigo_cliente'].nunique().reset_index()
@@ -99,9 +99,52 @@ if 'filial_venda' in df_filtrado.columns and 'codigo_cliente' in df_filtrado.col
     
     st.dataframe(tabela_clientes, use_container_width=True)
         
-else:
+ else:
     st.warning("Colunas 'filial_venda' ou 'codigo_cliente' não encontradas.")
+    
+    
+ st.divider()
+ st.subheader(" Descontos")
 
+# Somatoria do total de cada vendedor
+ df_rank = df_filtrado.groupby('nome_vendedor')[['Receita Bruta', 'Desconto']].sum().reset_index()
+    
+#Calcula a %
+ df_rank['% Desconto'] = df_rank.apply(
+        lambda x: (x['Desconto'] / x['Receita Bruta'] * 100) if x['Receita Bruta'] > 0 else 0, 
+        axis=1
+    )
+
+    
+    # Grupo 1: Desconto Baixo (Até 1%)
+ df_baixo = df_rank[df_rank['% Desconto'] <= 1].sort_values('% Desconto')
+    
+    # Grupo 2: Desconto Alto (Acima de 1%)
+ df_alto = df_rank[df_rank['% Desconto'] > 1].sort_values('% Desconto', ascending=False)
+
+ col_esquerda, col_direita = st.columns(2)
+
+# Desconto de -1%
+ with col_esquerda:
+        st.subheader("Desconto até 1%")
+        if not df_baixo.empty:
+                       
+            st.dataframe(df_baixo[['nome_vendedor', 'Receita Bruta', 'Desconto', '% Desconto']].style.format({
+                'Receita Bruta': 'R$ {:,.2f}', 'Desconto': 'R$ {:,.2f}', '% Desconto': '{:.2f}%'
+            }), use_container_width=True, hide_index=True)
+        else:
+            st.info("Nenhum vendedor nesta categoria.")
+
+    # Desconto de + 1%
+ with col_direita:
+        st.subheader("Desconto acima de 1%")
+        if not df_alto.empty:
+                     
+            st.dataframe(df_alto[['nome_vendedor', 'Receita Bruta', 'Desconto', '% Desconto']].style.format({
+                'Receita Bruta': 'R$ {:,.2f}', 'Desconto': 'R$ {:,.2f}', '% Desconto': '{:.2f}%'
+            }), use_container_width=True, hide_index=True)
+        else:
+            st.info("Nenhum vendedor nesta categoria.")
 
 
 with aba3:
