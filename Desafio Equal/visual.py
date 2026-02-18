@@ -48,16 +48,16 @@ with aba1:
     st.header( "Finanças ")
     col1,col2,col3  = st.columns(3)
     
-    col1.metric("Receita Bruta", f"R${df_filtrado['Receita Liquida'].sum():,.2f}")
+    col1.metric("Receita Bruta", f"R${df_filtrado['Receita Bruta'].sum():,.2f}")
     col2.metric("Total Desconto", f"R${df_filtrado['Desconto'].sum():,.2f}")
-    col3.metric("Faturamento Liquido", f"R${df_filtrado['Receita Bruta'].sum():,.2f}")
+    col3.metric("Faturamento Liquido", f"R${df_filtrado['Receita Liquida'].sum():,.2f}")
     
-    temp = df_filtrado.groupby('Mes_Ano')[['Receita Liquida', 'Receita Bruta']].sum().reset_index()
+    temp = df_filtrado.groupby('Mes_Ano')[['Receita Bruta' , 'Receita Liquida']].sum().reset_index()
     
     
     fig = px.bar(temp,
                            x='Mes_Ano',
-                           y=['Receita Liquida', 'Receita Bruta'], 
+                           y=[ 'Receita Bruta','Receita Liquida'], 
                            title= "Total de descontos em ", 
                            barmode='group')
  
