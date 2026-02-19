@@ -1,4 +1,4 @@
-# Dashboard Comercial
+# Dashboard Comercial - Lumen Store
 
 Este projeto consiste em um **sistema de dashboard** desenvolvido para visualizar e acompanhar o desempenho comercial de uma empresa.
 
