@@ -1,28 +1,34 @@
-# 📊 Case de BI - Lumen Store (Processo Seletivo Equal)
+# Dashboard Comercial
 
-Este repositório contém a solução técnica desenvolvida para o desafio de Estágio em Business Intelligence. O projeto simula um cenário real da varejista **Lumen Store**, focando na transformação de dados brutos em insights estratégicos.
+Este projeto consiste em um **sistema de dashboard** desenvolvido para visualizar e acompanhar o desempenho comercial de uma empresa.
 
-## 🧠 O Desafio
-O objetivo foi analisar o desempenho comercial da empresa e responder a perguntas de negócio utilizando dados de vendas, produtos e vendedores.
+O sistema reúne, em um único ambiente, informações de vendas que auxiliam na análise dos resultados e no apoio à tomada de decisão.
 
-**Principais Perguntas Respondidas:**
-1. Qual a evolução do Faturamento Bruto vs. Líquido?
-2. Qual a performance individual das filiais e vendedores?
-3. Quais produtos e famílias geram maior margem de lucro?
-4. **(Análise Avançada)** Quais produtos apresentam afinidade de compra (Market Basket Analysis)?
+---
 
-## 🛠️ Tecnologias Utilizadas
-* **Python (Pandas):**
-    * Limpeza e tratamento de dados (ETL).
-    * Criação do modelo estrela (união de Fato e Dimensões).
-    * Algoritmo de associação para identificar padrões de compra cruzada (Cross-sell).
-* **Power BI:**
-    * Dashboard interativo para visualização de KPIs.
-    * Cálculos DAX para margem e ticket médio.
+## Funcionalidades
 
-## 📂 Estrutura do Projeto
-* `/dados`: Arquivos originais (csv/xlsx).
-* `/scripts`: Código Python (`analise_lumen.py`) utilizado para processar os dados.
-* `/output`: Base de dados tratada e tabelas auxiliares geradas pelo script.
-* `/dashboard`: Arquivo `.pbix` do Power BI.
+- Visualização do faturamento bruto e líquido
+- Acompanhamento da performance mensal de vendas
+- Análise de descontos aplicados
+- Comparação de desempenho entre filiais
+- Comparação de desempenho entre vendedores
+- Análise de produtos e padrões de compra
 
+---
+
+## Período dos Dados
+
+- Janeiro de 2025 a Janeiro de 2026
+
+---
+
+## Objetivo
+
+Fornecer uma visão clara e objetiva dos dados comerciais, permitindo identificar variações de desempenho, oportunidades de melhoria e apoio à gestão comercial.
+
+---
+
+## Autor
+
+João Vitor Cardoso de Jesus
